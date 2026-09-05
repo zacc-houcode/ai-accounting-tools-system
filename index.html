@@ -755,7 +755,8 @@ function coreAgents(){ return [
   {id:'cnb',core:true,group:'build',level:'manager',name:'AI Connectors Builder',role:'连接建造师',skills:'设定 Connectors (MCP)；接上 SQL Account、邮箱、云端硬盘等系统；测试连线与权限',scope:'负责打造与设定 Connectors，让 AI 连得上要用的系统。'},
   {id:'wfb',core:true,group:'build',level:'manager',name:'AI Workflow Builder',role:'流程建造师',skills:'把流程图转成可执行的步骤说明；维护 workflows/ 文件',scope:'负责打造工作流程。'},
   {id:'skb',core:true,group:'build',level:'manager',name:'AI Skill Builder',role:'技能建造师',skills:'为每个 Agent 编写 SKILL.md；把重复的方法抽成技能',scope:'负责打造所需的技能给 AI Agent。'},
-  {id:'agt',core:true,group:'build',level:'manager',name:'AI Agent Trainer',role:'Agent 训练师',skills:'定义岗位说明；用样本资料测试与校正 Agent 表现',scope:'负责打造和训练 AI Agent 工作岗位。'}
+  {id:'agt',core:true,group:'build',level:'manager',name:'AI Agent Trainer',role:'Agent 训练师',skills:'定义岗位说明；用样本资料测试与校正 Agent 表现',scope:'负责打造和训练 AI Agent 工作岗位。'},
+  {id:'plb',core:true,group:'build',level:'manager',name:'AI Plugin Builder',role:'Plugin 建造师',skills:'把一条工作流程或一批新岗位打包成 Plugin；建好资料夹与 plugin.json；写 README 与安装核对清单；管版本与更新',scope:'负责把说明书（MD 或 JSON）变成一个装得起来的 Plugin，并保持团队 Plugin 与工作流程 Plugin 分开。不改流程内容，不订审计规则，不做业务决定。'}
 ];}
 function newAgent(){ return {id:uid(),core:false,group:'new',level:'manager',name:'',role:'',skills:'',scope:''}; }
 /* the prepared five always come from here — students read them, never edit them */
@@ -1461,7 +1462,7 @@ ${mermaid(wf)}
 
 ## 3. AI Agent 团队
 
-关系层次：**Leader（${leader||'使用者本人'}，人类）** 只对 **Commander** 说话。Commander 读懂整个流程，安排每一个 Agent 做事。其余 Agent 之间没有上下级，各自只对 Commander 负责，各管各的工作范围。前五个是现成的，用范本接上即可，不要重写。
+关系层次：**Leader（${leader||'使用者本人'}，人类）** 只对 **Commander** 说话。Commander 读懂整个流程，安排每一个 Agent 做事。其余 Agent 之间没有上下级，各自只对 Commander 负责，各管各的工作范围。前六个是现成的，用范本接上即可，不要重写。
 
 | Agent · 岗位 | 类别 | 文件 | 技能 | 工作范围 |
 |---|---|---|---|---|
@@ -1679,7 +1680,7 @@ function genNewAgentsMd(ag,wf,leader){
   const L=[]; const w=x=>L.push(x);
   w('# 新增的 AI Agent · '+mine.length+' 个');
   w('');
-  w('这份只有「新增的」部分。现成那五个（AI Commander、AI Connectors Builder、AI Workflow Builder、AI Skill Builder、AI Agent Trainer）已经在团队 Plugin 里，**不要重建、不要覆盖**。');
+  w('这份只有「新增的」部分。现成那六个（AI Commander、AI Connectors Builder、AI Workflow Builder、AI Skill Builder、AI Agent Trainer、AI Plugin Builder）已经在团队 Plugin 里，**不要重建、不要覆盖**。');
   w('');
   w('## 给 Claude 的指示');
   w('');
@@ -1871,7 +1872,7 @@ function genTeamMd(ag,flows,leader){
   w('|---|---|---|---|');
   core.forEach(a=>{ w('| `'+codeOf(a)+'` | '+a.name+' | '+agGroupName(a)+' | '+String(a.scope||'').replace(/\|/g,'／')+' |'); });
   w('');
-  w('这五个是通用的一套，每个部门都一样。Claude 只需要把它们放进 `agents/`，接上下面这批新的。');
+  w('这六个是通用的一套，每个部门都一样。Claude 只需要把它们放进 `agents/`，接上下面这批新的。');
   w('');
   w('## 7. 要新增的 Agent（这个部门专属）');
   w('');
@@ -1934,7 +1935,7 @@ function genTeamMd(ag,flows,leader){
   w('## '+(n8+4)+'. 打造顺序');
   w('');
   w('1. 建文件夹与 `README.md`。');
-  w('2. 放进 5 个现成 Agent，写好它们的派工卡。');
+  w('2. 放进 6 个现成 Agent，写好它们的派工卡。');
   w('3. 建新增的 Agent：身份 → 空记忆 → 派工卡。');
   w('4. 写 `workflows/` 与 `skills/`。');
   w('5. 写 connectors/README.md 与 memory/shared.md。');
@@ -2347,12 +2348,12 @@ async function optimiseAgents(getAg,after,key){
   if(!cap.sample){ toast('这本课本不直接连 Claude · 用「请 Claude 检查」复制提示词，自己改'); return; }
   const ag=getAg(); const mine=ag.filter(a=>!a.core);
   if(!mine.length){ toast('先加一个自己的 Agent'); return; }
-  if(!(await ask('Claude 会改写你新增的 Agent 的岗位、技能和工作范围，不会碰那五个现成的，也不会新增或删除。继续？'))) return;
+  if(!(await ask('Claude 会改写你新增的 Agent 的岗位、技能和工作范围，不会碰那六个现成的，也不会新增或删除。继续？'))) return;
   const ans=$('#ta-'+key), stt=$('#ts-'+key);
   if(ans){ ans.classList.add('show','think'); ans.textContent='Claude 正在优化…（第一次会先问你是否允许）'; }
   if(stt) stt.textContent='';
   const list=mine.map((a,i)=>`${i+1}. 岗位：${a.name||'（未填）'}｜技能：${a.skills||'（未填）'}｜工作范围：${a.scope||'（未填）'}`).join('\n');
-  const prompt=`${TUTOR_RULES}\n\n任务：优化使用者新增的 AI Agent 的写法，让部门里另一个人照着也知道它该做什么、不该做什么。只改写文字，不要新增或删除 Agent。\n规则：1) 那五个现成的 Agent（AI Commander、AI Connectors Builder、AI Workflow Builder、AI Skill Builder、AI Agent Trainer）绝对不要动。2) 技能用动词开头、分号分开，2 到 4 项。3) 工作范围要写清楚负责哪几步、不碰什么，最后一定要有一句「不做…」。4) 不要发明流程里没有的系统或资料。\n\n使用者的工作流程：\n${wfOutline(S.wf)}\n\n使用者新增的 Agent：\n${list}\n\n只回 JSON：{"summary":"一两句说明你改了什么","changes":[{"agent":"岗位名或序号","field":"name|skills|scope","value":"改好的内容"}]}`;
+  const prompt=`${TUTOR_RULES}\n\n任务：优化使用者新增的 AI Agent 的写法，让部门里另一个人照着也知道它该做什么、不该做什么。只改写文字，不要新增或删除 Agent。\n规则：1) 那六个现成的 Agent（AI Commander、AI Connectors Builder、AI Workflow Builder、AI Skill Builder、AI Agent Trainer、AI Plugin Builder）绝对不要动。2) 技能用动词开头、分号分开，2 到 4 项。3) 工作范围要写清楚负责哪几步、不碰什么，最后一定要有一句「不做…」。4) 不要发明流程里没有的系统或资料。\n\n使用者的工作流程：\n${wfOutline(S.wf)}\n\n使用者新增的 Agent：\n${list}\n\n只回 JSON：{"summary":"一两句说明你改了什么","changes":[{"agent":"岗位名或序号","field":"name|skills|scope","value":"改好的内容"}]}`;
   try{
     const patch=await sample.json(prompt,{cache:false});
     const applied=applyAgentPatch(ag,patch);
@@ -2384,7 +2385,7 @@ async function optimiseWf(getWf,after,key){
   }catch(e){ if(ans){ ans.classList.remove('think'); ans.textContent=''; ans.classList.remove('show'); } if(stt) stt.textContent=errCopy(e&&e.code)||'优化失败，再试一次'; }
 }
 function checkAgents(ws,key){
-  const prompt=`${TUTOR_RULES}\n\n任务：检查使用者设计的 AI Agent 团队。方法规则：1) Leader 是使用者本人，只对 Commander 说话。2) 只有一个 Commander，它是 Leader 唯一的对接点。3) 四个核心 Agent（Commander、Workflow Builder、Skill Builder、Agent Trainer）固定。4) 每个新增 Agent 必须有名称与岗位、技能、工作范围，三项缺一不可。5) 工作范围不重叠，也不留空：流程图里每个 AI 步骤都要有人负责。6) 带 Audit 的步骤，Agent 只检查并报告，不决定。\n\n回复格式（简体中文，不超过 350 字）：一句总评；「必须改」编号清单；「建议」编号清单（可以建议新增或合并 Agent，给名称）。\n\n引用步骤时用「第 N 步」这种普通号码，不要用英文代号或 id。\n\n团队：\n${ws.agents.map(a=>`- ${a.name||'（未命名）'}｜岗位：${a.role||'（未填）'}｜层级：${a.level==='commander'?'Commander':'Manager / Executor'}｜技能：${a.skills||'（未填）'}｜工作范围：${a.scope||'（未填）'}`).join('\n')}\n\n流程内容：\n${wfOutline(ws.wf)}`;
+  const prompt=`${TUTOR_RULES}\n\n任务：检查使用者设计的 AI Agent 团队。方法规则：1) Leader 是使用者本人，只对 Commander 说话。2) 只有一个 Commander，它是 Leader 唯一的对接点。3) 六个现成 Agent（Commander、Connectors Builder、Workflow Builder、Skill Builder、Agent Trainer、Plugin Builder）固定。4) 每个新增 Agent 必须有名称与岗位、技能、工作范围，三项缺一不可。5) 工作范围不重叠，也不留空：流程图里每个 AI 步骤都要有人负责。6) 带 Audit 的步骤，Agent 只检查并报告，不决定。\n\n回复格式（简体中文，不超过 350 字）：一句总评；「必须改」编号清单；「建议」编号清单（可以建议新增或合并 Agent，给名称）。\n\n引用步骤时用「第 N 步」这种普通号码，不要用英文代号或 id。\n\n团队：\n${ws.agents.map(a=>`- ${a.name||'（未命名）'}｜岗位：${a.role||'（未填）'}｜层级：${a.level==='commander'?'Commander':'Manager / Executor'}｜技能：${a.skills||'（未填）'}｜工作范围：${a.scope||'（未填）'}`).join('\n')}\n\n流程内容：\n${wfOutline(ws.wf)}`;
   if(!cap.sample){ handoff(prompt,'团队检查'); return; }
   askTutor(key,prompt,{cache:false});
 }
@@ -2430,7 +2431,7 @@ async function aiBuildAgents(pre,getList,getWf,editor){
 3. 工作范围写它负责哪些事、不碰什么，最后一定要有一句「不做…」。
 4. 只写使用者形容得到的范围，不要发明部门没有的系统、资料或规则。
 5. 不要重复已经有的 Agent：${have||'（还没有）'}。
-6. 这五个是现成的，绝对不要重建：AI Commander、AI Connectors Builder、AI Workflow Builder、AI Skill Builder、AI Agent Trainer。
+6. 这六个是现成的，绝对不要重建：AI Commander、AI Connectors Builder、AI Workflow Builder、AI Skill Builder、AI Agent Trainer、AI Plugin Builder。
 7. 如果使用者形容的其实是一件事，就只给 1 个 Agent，不要硬凑。
 
 使用者的工作流程：
@@ -3030,7 +3031,7 @@ function renderSysPage(){
   const mine=team.filter(a=>!a.core).length;
   const steps=flows.reduce((n,f)=>n+stepIndexMap(f.wf).length,0);
   const audits=flows.reduce((n,f)=>n+auditPoints(f.wf).length,0);
-  box.innerHTML=`<div class="card"><span class="label">🤖 AI 团队 Plugin · 1 个</span><p style="margin:6px 0 0">现成 5 个 + 你新增 ${mine} 个岗位。<a href="#p41" data-go="p41">去团队建造器</a></p></div>
+  box.innerHTML=`<div class="card"><span class="label">🤖 AI 团队 Plugin · 1 个</span><p style="margin:6px 0 0">现成 ${coreAgents().length} 个 + 你新增 ${mine} 个岗位。<a href="#p41" data-go="p41">去团队建造器</a></p></div>
     <div class="card"><span class="label">🔁 工作流程 Plugin · ${flows.length} 个</span><p style="margin:6px 0 0">${flows.length?esc(flows.map(f=>f.name).join('、'))+'，共 '+steps+' 步。':'流程库还是空的。'}<br><a href="#p40" data-go="p40">去流程建造器</a></p></div>
     <div class="card"><span class="label">🛡️ 审计点 · ${audits} 个</span><p style="margin:6px 0 0">${audits?'审计台会把它们全部列出来，标明来自哪一条流程。':'流程里还没有勾 Audit。'}<br><a href="#p42" data-go="p42">去审计系统</a></p></div>`;
 }
