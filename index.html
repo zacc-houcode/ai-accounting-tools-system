@@ -544,6 +544,17 @@ h4.agh{margin:22px 0 10px;font-size:15px}
       </div>
     </div>
     <div class="body">
+        <div class="aibox" id="libAi">
+          <span class="label">✨ AI 帮你画流程</span>
+          <p class="note">用你自己的话说一遍这件事平常怎么做，Claude 会照今天的画法，帮你排好模块、每一步的「如何做」和「预期结果」、谁负责、哪里要审。生成后每一步都可以自己改。</p>
+          <textarea id="libAiIn" rows="3" hidden placeholder="例：每天早上收到供应商发票的邮件，我要把 PDF 里的供应商、发票号、日期、金额、税额抄进 Excel 清单，金额对不上就要重看那张发票，最后我自己抽几张核对，没问题才交给入账同事。"></textarea>
+          <div class="row" id="libAiRow" hidden><button class="btn pri sm" type="button" id="libAiGo">✨ 生成流程</button><span class="status" id="libAiStatus"></span></div>
+          <p class="note" id="libAiOff" style="margin:0 0 10px">写好上面的描述，按「📋 复制提示词给 Claude」，贴进你自己的 Claude 对话。它会回一段 <b>JSON</b>：整段复制，贴进下面的框，按「贴回来 · 生成流程」，新流程就会加进下面的流程库。</p>
+          <div id="libAiBack" hidden>
+            <textarea id="libAiJson" rows="3" placeholder="把 Claude 回的整段 JSON 贴在这里（{ 开头 } 结尾）"></textarea>
+            <div class="row"><button class="btn sm" type="button" id="libAiApply">贴回来 · 生成流程</button></div>
+          </div>
+        </div>
       <div id="libList"></div>
       <div id="libEdit" hidden>
         <div class="row between" style="margin-bottom:14px">
@@ -704,7 +715,7 @@ h4.agh{margin:22px 0 10px;font-size:15px}
   </div>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<div id="__stubs" hidden aria-hidden="true"><div id="agAiGo"></div><div id="agCheck"></div><div id="agEditor"></div><div id="agFromWf"></div><div id="agLoadDemo"></div><div id="agMd"></div><div id="agMdNew"></div><div id="agView"></div><input type="checkbox" id="auAll"><div id="auAllTxt"></div><div id="auAllWrap"></div><div id="auDl"></div><div id="auLoadDemo"></div><div id="auView"></div><div id="auditForm"></div><div id="auditList"></div><div id="demoDiagram"></div><div id="demoLoad"></div><div id="demoZoom"></div><div id="finale"></div><div id="genBtn"></div><div id="genBundle"></div><div id="genCopy"></div><div id="genDownload"></div><textarea id="genOut"></textarea><div id="genProjCopy"></div><div id="genPrompt1"></div><div id="genStatus"></div><div id="genTabs"></div><div id="giCopy"></div><div id="giGen"></div><div id="giHint"></div><textarea id="giOut"></textarea><div id="giResult"></div><div id="giStatus"></div><div id="giTool"></div><div id="grBody"></div><div id="grPick"></div><div id="grTitle"></div><div id="installPick"></div><div id="legend"></div><div id="libFromClass"></div><div id="loopChart11"></div><div id="loopChart33"></div><div id="teacherBox"></div><div id="tmFromClass"></div><div id="wfCheck"></div><div id="wfClear"></div><div id="wfEditor"></div><div id="wfExport"></div><div id="wfImg"></div><div id="wfImport"></div><div id="wfLoadDemo"></div><div id="wfLoadEasy"></div><div id="wfZoom"></div></div>
+<div id="__stubs" hidden aria-hidden="true"><div id="agAiGo"></div><div id="agCheck"></div><div id="agEditor"></div><div id="agFromWf"></div><div id="agLoadDemo"></div><div id="agMd"></div><div id="agMdNew"></div><div id="agView"></div><input type="checkbox" id="auAll"><div id="auAllTxt"></div><div id="auAllWrap"></div><div id="auDl"></div><div id="auLoadDemo"></div><div id="auView"></div><div id="auditForm"></div><div id="auditList"></div><div id="demoDiagram"></div><div id="demoLoad"></div><div id="demoZoom"></div><div id="finale"></div><div id="genBtn"></div><div id="genBundle"></div><div id="genCopy"></div><div id="genDownload"></div><textarea id="genOut"></textarea><div id="genProjCopy"></div><div id="genPrompt1"></div><div id="genStatus"></div><div id="genTabs"></div><div id="giCopy"></div><div id="giGen"></div><div id="giHint"></div><textarea id="giOut"></textarea><div id="giResult"></div><div id="giStatus"></div><div id="giTool"></div><div id="grBody"></div><div id="grPick"></div><div id="grTitle"></div><div id="installPick"></div><div id="legend"></div><div id="libFromClass"></div><div id="loopChart11"></div><div id="loopChart33"></div><div id="teacherBox"></div><div id="tmFromClass"></div><div id="wfAiApply"></div><div id="wfAiGo"></div><div id="wfCheck"></div><div id="wfClear"></div><div id="wfEditor"></div><div id="wfExport"></div><div id="wfImg"></div><div id="wfImport"></div><div id="wfLoadDemo"></div><div id="wfLoadEasy"></div><div id="wfZoom"></div></div>
 
 <script>window.__TOOLS_ONLY=true;</script>
 <script>
@@ -2390,11 +2401,14 @@ $('#wfImport').addEventListener('click',()=>importJson(o=>{ if(o.wf) S.wf=hydrat
 $('#wfCheck').addEventListener('click',()=>{ checkWf({wf:S.wf},'wf'); if(!cap.sample) return; document.getElementById('tutor-wf').scrollIntoView({behavior:'smooth',block:'nearest'}); });
 wfFixers['wf']={get:()=>S.wf,after:()=>{ save(); wfP.render(); audP.render(); }};
 wfFixers['ag']={run:()=>optimiseAgents(()=>S.agents,()=>{ save(); agP.render(); },'ag')};
-function syncAiBox(){ const on=!!cap.sample; ['ag','tm'].forEach(pre=>{
+const AI_LABEL={ag:'✨ 生成 Agent',tm:'✨ 生成 Agent',wf:'✨ 生成流程',lib:'✨ 生成流程'};
+function syncAiBox(){ const on=!!cap.sample; ['ag','tm','wf','lib'].forEach(pre=>{
   if(!$('#'+pre+'Ai')) return;
-  const ta=$('#'+pre+'AiIn'), row=$('#'+pre+'AiRow'), off=$('#'+pre+'AiOff'), go=$('#'+pre+'AiGo');
+  const ta=$('#'+pre+'AiIn'), row=$('#'+pre+'AiRow'), off=$('#'+pre+'AiOff'), go=$('#'+pre+'AiGo'), back=$('#'+pre+'AiBack');
   if(ta) ta.hidden=false; if(row) row.hidden=false; if(off) off.hidden=on;
-  if(go) go.textContent=on?'✨ 生成 Agent':'📋 复制提示词给 Claude'; }); }
+  /* 没有 sample 时，Claude 的回覆要靠使用者贴回来 */
+  if(back) back.hidden=on;
+  if(go) go.textContent=on?(AI_LABEL[pre]||'✨ 生成'):'📋 复制提示词给 Claude'; }); }
 $('#agLoadDemo').addEventListener('click',()=>{ const names=new Set(S.agents.map(a=>a.name)); let k=0; DEMO_AGENTS.forEach(d=>{ if(names.has(d.name)) return; const a=newAgent(); Object.assign(a,d); a.id=uid(); S.agents.push(a); agP.reveal(a.id); k++; }); save(); agP.render(); toast(k?'已加入 '+k+' 个示范 Agent':'示范 Agent 已经在了'); });
 $('#agFromWf').addEventListener('click',()=>{ const made=suggestAgentsFromWf(S.wf,S.agents); agP.reveal(made.map(a=>a.id)); save(); agP.render(); toast(made.length?'建议了 '+made.length+' 个 Agent，请补齐技能与范围':'没有可建议的（流程图里没有 AI 步骤，或已经有了）'); });
 async function aiBuildAgents(pre,getList,getWf,editor){
@@ -2443,6 +2457,113 @@ ${want}
   finally{ btn.disabled=false; }
 }
 $('#agAiGo').addEventListener('click',()=>aiBuildAgents('ag',()=>S.agents,()=>S.wf,agP));
+
+/* ---- AI 帮你画流程（和「AI 帮你建 Agent」同一个做法）---- */
+function wfAiPrompt(want,cur){
+  const has=cur&&(cur.start||cur.modules.some(m=>m.steps.length));
+  return `${TUTOR_RULES}
+
+任务：照使用者的描述，帮他画好一整条工作流程。
+规则：
+1. 分成 2 到 4 个模块，每个模块回答「这一段在做什么」；所有步骤加起来 5 到 12 步，不要更多。
+2. 每一步都要写「如何做 how」和「预期结果 expected」，写成部门里另一个人照着也做得出来的话。
+3. 每一步都要有人负责：actor 填 human 或 ai；role 填岗位名 —— human 写职位（例如「应付会计」），ai 写这个 Agent 的岗位（例如「发票识别助手」）。
+4. 至少有一个 type 是 "or" 的判断：how 写要判断什么，no 写「否」的时候怎么处理，noTarget 写「否」之后去哪里 —— 步骤号码（数字），或 "prev" 回上一步、"manual" 转人工、"endflow" 结束流程。
+5. 风险最高的那一步（错了会出事、或者要有人负责的那一步）填 audit:true，其余 audit:false。至少要有一个 audit:true。
+6. 真的会用到系统或档案，才填 tools（例如 SQL Account、Excel、邮箱）和 data（例如 供应商主档、上个月的清单）；用不到就留空字符串。
+7. 同一件事要重复做才用 type "loop"，并在 loop 写重复次数或停止条件。
+8. start 是整条流程的开头（谁在什么时候把东西准备好），end 是结尾（做完交给谁）。开始和结束不放进模块里。
+9. 只写使用者形容得到的范围，不要发明部门没有的系统、资料或规则。全部用简体中文。
+
+${has?'使用者现在画到的（可以参考，也可以整条重画）：\n'+wfOutline(cur)+'\n':''}
+使用者的描述：
+${want}
+
+只回 JSON，不要别的字：
+{"name":"流程名称","goal":"这个流程的目标","trigger":"trigger 或 manual","triggerDesc":"什么事情发生就启动","endResult":"做完会得到什么",
+ "start":{"how":"","expected":""},
+ "modules":[{"name":"模块名","steps":[{"type":"step 或 or 或 loop","actor":"human 或 ai","role":"","audit":false,"how":"","expected":"","tools":"","data":"","no":"","noTarget":"","loop":""}]}],
+ "end":{"how":"","expected":""},
+ "note":"一句话说明你怎么理解他的需求"}`;
+}
+function parseLooseJson(t){
+  try{ return JSON.parse(t); }catch(e){}
+  const a=t.indexOf('{'), b=t.lastIndexOf('}'); if(a<0||b<=a) return null;
+  try{ return JSON.parse(t.slice(a,b+1)); }catch(e2){ return null; }
+}
+/* 只收下面这些栏位，别的一律不要 —— Claude 回什么都不会弄坏流程的结构 */
+function wfFromAi(o){
+  if(!o||typeof o!=='object') return null;
+  const src=(o.wf&&typeof o.wf==='object')?o.wf:o;
+  const s=(v,n)=>String(v==null?'':v).trim().slice(0,n||300);
+  const TYPES={step:'step',or:'or',loop:'loop'};
+  const mods=(Array.isArray(src.modules)?src.modules:[]).slice(0,6);
+  const raw={name:s(src.name,80),goal:s(src.goal),
+    trigger:src.trigger==='manual'?'manual':'trigger',
+    triggerDesc:s(src.triggerDesc||src.trigger_desc),
+    endResult:s(src.endResult||src.end_result),
+    start:src.start?{type:'start',actor:'human',how:s(src.start.how),expected:s(src.start.expected)}:null,
+    end:src.end?{type:'end',how:s(src.end.how),expected:s(src.end.expected)}:null,
+    modules:mods.map((m,i)=>({name:s(m&&m.name,40)||('模块 '+(i+1)),
+      steps:(Array.isArray(m&&m.steps)?m.steps:[]).slice(0,12).map(x=>{
+        const t=TYPES[String((x&&x.type)||'step')]||'step';
+        return {type:t,actor:(x&&x.actor)==='human'?'human':'ai',role:s(x&&x.role,40),
+          audit:(x&&x.audit)===true||(x&&x.audit)==='true',
+          how:s(x&&x.how),expected:s(x&&x.expected),tools:s(x&&x.tools,120),data:s(x&&x.data,120),
+          use:s(x&&x.use,120),useKind:USES[x&&x.useKind]?x.useKind:'',
+          no:t==='or'?s(x&&x.no,160):'',
+          noTarget:t==='or'?s(x&&x.noTarget,20):'',
+          loop:t==='loop'?s(x&&x.loop,120):''};
+      })}))};
+  const total=raw.modules.reduce((n,m)=>n+m.steps.length,0);
+  if(!total) return null;
+  const wf=hydrateWf(raw);
+  const map=stepIndexMap(wf);
+  wf.modules.forEach(m=>m.steps.forEach(st=>{
+    if(st.type!=='or'){ st.noTarget=''; return; }
+    const v=st.noTarget;
+    if(/^\d+$/.test(v)){ const hit=map.find(x=>x.n===parseInt(v,10)); st.noTarget=hit&&hit.id!==st.id?hit.id:'prev'; }
+    else if(!NO_TARGETS[v]) st.noTarget='prev';
+  }));
+  return wf;
+}
+function wfAiCount(wf){ return wf.modules.reduce((n,m)=>n+m.steps.length,0); }
+async function aiBuildWf(pre,getWf,apply){
+  const want=($('#'+pre+'AiIn').value||'').trim();
+  if(!want){ toast('先用几句话说清楚这件事平常怎么做'); return; }
+  const st=$('#'+pre+'AiStatus'), btn=$('#'+pre+'AiGo');
+  const prompt=wfAiPrompt(want,getWf());
+  if(!cap.sample){
+    await handoff(prompt+'\n\n（请把整段 JSON 给我，我要贴回工具里。）','画流程');
+    st.textContent='贴进你自己的 Claude，把它回的整段 JSON 复制回来，贴进下面的框。';
+    return;
+  }
+  st.textContent='Claude 正在画…（第一次会先问你是否允许这个页面使用你的 Claude）'; btn.disabled=true;
+  try{
+    const r=await sample.json(prompt,{cache:false});
+    const wf=wfFromAi(r);
+    if(!wf){ st.textContent='Claude 没有给出可以用的流程，换个说法再试一次。'; return; }
+    if(!(await apply(wf))) { st.textContent=''; return; }
+    st.textContent=((r&&r.note)?r.note+' · ':'')+'已经画好 '+wfAiCount(wf)+' 步，往下看，每一步都可以改。';
+    $('#'+pre+'AiIn').value='';
+  }catch(e){ st.textContent=errCopy(e&&e.code)||'生成失败，再试一次'; }
+  finally{ btn.disabled=false; }
+}
+async function aiPasteWf(pre,apply){
+  const box=$('#'+pre+'AiJson'); const t=(box&&box.value||'').trim();
+  if(!t){ toast('先把 Claude 回的 JSON 贴进来'); return; }
+  const o=parseLooseJson(t);
+  const wf=o?wfFromAi(o):null;
+  if(!wf){ toast('这段看起来不是流程 JSON · 把 Claude 回覆里 { 开头 } 结尾的那一整段复制过来'); return; }
+  if(!(await apply(wf))) return;
+  box.value=''; $('#'+pre+'AiStatus').textContent='已经画好 '+wfAiCount(wf)+' 步，每一步都可以改。';
+}
+async function applyWfHere(wf){
+  if((S.wf.modules.some(m=>m.steps.length)||S.wf.start||S.wf.end)&&!(await ask('会覆盖你现在画的流程，继续？'))) return false;
+  S.wf=wf; save(); wfP.render(); audP.render(); toast('已生成流程 · 往下看可以改'); return true;
+}
+$('#wfAiGo').addEventListener('click',()=>aiBuildWf('wf',()=>S.wf,applyWfHere));
+$('#wfAiApply').addEventListener('click',()=>aiPasteWf('wf',applyWfHere));
 async function loadAuditDemo(){
   const has=S.wf.modules.some(m=>m.steps.length)||S.wf.start||S.wf.end;
   if(has&&!(await ask('载入示范会覆盖你现在画的流程和审计设定，继续？'))) return;
@@ -2815,6 +2936,7 @@ function renderLib(){
   if(libCur&&!libItem()) libCur=null;
   const editing=!!libItem();
   $('#libEdit').hidden=!editing; $('#libFoot').hidden=!editing; L.hidden=editing; $('#libTop').hidden=editing;
+  const libAi=$('#libAi'); if(libAi) libAi.hidden=editing;
   $('#libHead').textContent=editing?libName(libItem()):'我的流程库';
   if(editing){ libP.render(); libStamp(); return; }
   const lib=libState();
@@ -2911,6 +3033,9 @@ $('#tmFromClass').addEventListener('click',()=>{ const t=teamState(); const name
   save(); teamP.render(); toast(k?'复制了 '+k+' 个 Agent':'没有可以复制的 Agent'); });
 $('#tmCheck').addEventListener('click',()=>{ checkAgents({wf:teamWf(),agents:teamState()},'tmag'); if(!cap.sample) return; document.getElementById('tutor-tmag').scrollIntoView({behavior:'smooth',block:'nearest'}); });
 wfFixers['tmag']={run:()=>optimiseAgents(()=>teamState(),()=>{ save(); teamP.render(); },'tmag')};
+async function applyWfLib(wf){ libAdd(wf); toast('已生成，加进流程库'); return true; }
+$('#libAiGo').addEventListener('click',()=>aiBuildWf('lib',()=>{ const it=libItem(); return it?it.wf:emptyWf(); },applyWfLib));
+$('#libAiApply').addEventListener('click',()=>aiPasteWf('lib',applyWfLib));
 $('#libFromClass').addEventListener('click',()=>{
   const steps=S.wf.modules.reduce((n,m)=>n+m.steps.length,0);
   if(!steps&&!S.wf.start){ toast('没有可以复制的流程'); return; }
