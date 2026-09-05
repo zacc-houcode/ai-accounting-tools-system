@@ -3177,7 +3177,8 @@ function renderFinale(){ const f=$('#finale'); if(!f) return; const got=BADGES.f
 /* ---- navigation ---- */
 let cur=null;
 function seqIndex(id){ return SEQ.findIndex(p=>p.id===id); }
-function lockedBy(p){ if(!p.gate||S.teacher) return null; const i=GATED.indexOf(p); if(i<=0) return null; const prev=GATED[i-1]; return S.stars[prev.id]?null:prev; }
+/* 全部揭开：每一页随时打得开，星星只是完成的记号，不再挡路 */
+function lockedBy(){ return null; }
 function go(id){
   const p=PAGES.find(x=>x.id===id); if(!p) return;
   const lk=lockedBy(p); if(lk){ toast('🔒 先完成 Page '+lk.code+' · '+lk.title); return; }
@@ -3199,11 +3200,11 @@ function renderGateBox(){
   if(!p.gate){ box.className='gate'; box.innerHTML=cur===MAP_ID?'<span class="st">🗺️</span><span>点一页开始。星星代表完成，徽章代表产出物。</span>':'<span class="st">📚</span><span>参考页，没有完成条件。</span>'; }
   else if(S.stars[p.id]){ box.className='gate done'; box.innerHTML='<span class="st">⭐</span><span>已完成 · '+esc(p.title)+'</span>'; }
   else if(g.self){ box.className='gate'; box.innerHTML='<span class="st">📖</span><span>'+esc(g.txt())+'</span><button type="button" class="btn sm pri selfbtn" id="selfDone">✓ 完成</button>'; $('#selfDone').addEventListener('click',()=>{ S.stars[p.id]=true; persistNow(); toast('⭐ 完成：'+p.title); confetti(); renderGateBox(); renderStars(); syncStudent(); }); }
-  else { box.className='gate'; box.innerHTML='<span class="st">🔓</span><span>完成条件：'+esc(g.txt())+'</span>'; }
+  else { box.className='gate'; box.innerHTML='<span class="st">⭐</span><span>拿这一页的星星：'+esc(g.txt())+'</span>'; }
   const i=seqIndex(cur);
   const pageDone=!p.gate||!!S.stars[p.id];
   $('#prevBtn').disabled=(cur===MAP_ID)||i<=0;
-  $('#nextBtn').hidden=(cur!==MAP_ID)&&!pageDone;
+  $('#nextBtn').hidden=false;
   $('#nextBtn').disabled=(cur!==MAP_ID)&&i>=SEQ.length-1;
   $('#nextBtn').textContent=(cur!==MAP_ID&&i>=SEQ.length-1)?'已是最后一页':(cur===MAP_ID?'从第一页开始 →':'下一页 →');
 }
