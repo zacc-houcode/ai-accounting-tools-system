@@ -1888,7 +1888,7 @@ function genTeamMd(ag,flows,leader){
   w('|---|---|---|---|');
   core.forEach(a=>{ w('| `'+codeOf(a)+'` | '+a.name+' | '+agGroupName(a)+' | '+String(a.scope||'').replace(/\|/g,'／')+' |'); });
   w('');
-  w('这六个是通用的一套，每个部门都一样。Claude 只需要把它们放进 `agents/`，接上下面这批新的。');
+  w('这六个每个部门都一样，现成的写法已经在这份文件里。Claude 只需要把它们放进 `agents/`，接上下面这批新的。');
   w('');
   w('### 以后要加一个新岗位：直接找 AI Agent Trainer');
   w('');
