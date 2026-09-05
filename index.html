@@ -524,7 +524,7 @@ h4.agh{margin:22px 0 10px;font-size:15px}
     <div class="row" id="mapResume"></div>
   </div>
   <div id="mapGrid"></div>
-  <div class="badges-wrap"><span class="label">徽章 · 今天六个产出物</span><div class="badges" id="badgeRow"></div></div>
+  <div class="badges-wrap"><span class="label">徽章 · 今天七个产出物</span><div class="badges" id="badgeRow"></div></div>
 </section>
 
 <section class="page" id="p40" data-ch="4" data-emoji="🛠️" data-title="工作流程建造器" data-time="" data-gate="" data-anim="none">
@@ -618,6 +618,19 @@ h4.agh{margin:22px 0 10px;font-size:15px}
     </div>
   </div>
   <div id="tutor-tmag" class="tutor" data-tutor="tmag" data-title="Claude 助教 · 团队检查"></div>
+  <details class="challenge"><summary>🧩 装好 Plugin 之后：直接叫 AI Agent Trainer 帮你建</summary>
+    <p class="note">这一页是<b>今天现场</b>用的：想清楚要什么岗位，导出给 Claude Code 建。等团队 Plugin 装好了，以后要再加岗位<b>不必回来画</b> —— 开一个对话，对 Commander 或直接对 <b>AI Agent Trainer</b> 说下面这段，它会一题一题问清楚、草拟给你确认，再写进团队、交给 <b>AI Plugin Builder</b> 打包。</p>
+    <pre id="trainerLine2">我要加一个新岗位。先问我五个问题，一次问一题：
+1) 这个岗位平常要做什么？
+2) 它要用哪些资料或系统？
+3) 什么算做对了？
+4) 什么事它绝对不可以做？
+5) 出问题时要找谁？
+问完给我：岗位、技能（2 到 4 项）、工作范围（最后一句是「不做…」）。
+我点头之后，写进 agents/，更新 REGISTRY.md，再交给 AI Plugin Builder 打包，最后告诉我怎么装。</pre>
+    <div class="row"><button class="btn sm" type="button" data-copy="trainerLine2">复制这段话</button></div>
+    <p class="note" style="margin-top:10px">手上已经有一份「只导出新增的」<b>NEW-AGENTS.md</b>，更快：直接给它，说「照这份建，缺的再问我」。</p>
+  </details>
 </section>
 
 <section class="page" id="p42" data-ch="4" data-emoji="🛡️" data-title="审计系统" data-time="" data-gate="" data-anim="none">
@@ -719,7 +732,7 @@ h4.agh{margin:22px 0 10px;font-size:15px}
   </div>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<div id="__stubs" hidden aria-hidden="true"><div id="agAiApply"></div><div id="agAiGo"></div><div id="agCheck"></div><div id="agEditor"></div><div id="agFromWf"></div><div id="agLoadDemo"></div><div id="agMd"></div><div id="agMdNew"></div><div id="agView"></div><input type="checkbox" id="auAll"><div id="auAllTxt"></div><div id="auAllWrap"></div><div id="auDl"></div><div id="auLoadDemo"></div><div id="auView"></div><div id="auditForm"></div><div id="auditList"></div><div id="demoDiagram"></div><div id="demoLoad"></div><div id="demoZoom"></div><div id="finale"></div><div id="genBtn"></div><div id="genBundle"></div><div id="genCopy"></div><div id="genDownload"></div><textarea id="genOut"></textarea><div id="genProjCopy"></div><div id="genPrompt1"></div><div id="genStatus"></div><div id="genTabs"></div><div id="giCopy"></div><div id="giGen"></div><div id="giHint"></div><textarea id="giOut"></textarea><div id="giResult"></div><div id="giStatus"></div><div id="giTool"></div><div id="grBody"></div><div id="grPick"></div><div id="grTitle"></div><div id="installPick"></div><div id="legend"></div><div id="libFromClass"></div><div id="loopChart11"></div><div id="loopChart33"></div><div id="teacherBox"></div><div id="tmFromClass"></div><div id="wfAiApply"></div><div id="wfAiGo"></div><div id="wfCheck"></div><div id="wfClear"></div><div id="wfEditor"></div><div id="wfExport"></div><div id="wfImg"></div><div id="wfImport"></div><div id="wfLoadDemo"></div><div id="wfLoadEasy"></div><div id="wfZoom"></div></div>
+<div id="__stubs" hidden aria-hidden="true"><div id="agAiApply"></div><div id="agAiGo"></div><div id="agCheck"></div><div id="agEditor"></div><div id="agFromWf"></div><div id="agLoadDemo"></div><div id="agMd"></div><div id="agMdNew"></div><div id="agView"></div><input type="checkbox" id="auAll"><div id="auAllTxt"></div><div id="auAllWrap"></div><div id="auDl"></div><div id="auLoadDemo"></div><div id="auView"></div><div id="auditForm"></div><div id="auditList"></div><div id="baseDone"></div><div id="baseFirst"></div><div id="basePkg"></div><div id="baseStatus"></div><div id="demoDiagram"></div><div id="demoLoad"></div><div id="demoZoom"></div><div id="finale"></div><div id="genBtn"></div><div id="genBundle"></div><div id="genCopy"></div><div id="genDownload"></div><textarea id="genOut"></textarea><div id="genProjCopy"></div><div id="genPrompt1"></div><div id="genStatus"></div><div id="genTabs"></div><div id="giCopy"></div><div id="giGen"></div><div id="giHint"></div><textarea id="giOut"></textarea><div id="giResult"></div><div id="giStatus"></div><div id="giTool"></div><div id="grBody"></div><div id="grPick"></div><div id="grTitle"></div><div id="installPick"></div><div id="legend"></div><div id="libFromClass"></div><div id="loopChart11"></div><div id="loopChart33"></div><div id="teacherBox"></div><div id="tmFromClass"></div><div id="wfAiApply"></div><div id="wfAiGo"></div><div id="wfCheck"></div><div id="wfClear"></div><div id="wfEditor"></div><div id="wfExport"></div><div id="wfImg"></div><div id="wfImport"></div><div id="wfLoadDemo"></div><div id="wfLoadEasy"></div><div id="wfZoom"></div></div>
 
 <script>window.__TOOLS_ONLY=true;</script>
 <script>
@@ -755,7 +768,7 @@ function coreAgents(){ return [
   {id:'cnb',core:true,group:'build',level:'manager',name:'AI Connectors Builder',role:'连接建造师',skills:'设定 Connectors (MCP)；接上 SQL Account、邮箱、云端硬盘等系统；测试连线与权限',scope:'负责打造与设定 Connectors，让 AI 连得上要用的系统。'},
   {id:'wfb',core:true,group:'build',level:'manager',name:'AI Workflow Builder',role:'流程建造师',skills:'把流程图转成可执行的步骤说明；维护 workflows/ 文件',scope:'负责打造工作流程。'},
   {id:'skb',core:true,group:'build',level:'manager',name:'AI Skill Builder',role:'技能建造师',skills:'为每个 Agent 编写 SKILL.md；把重复的方法抽成技能',scope:'负责打造所需的技能给 AI Agent。'},
-  {id:'agt',core:true,group:'build',level:'manager',name:'AI Agent Trainer',role:'Agent 训练师',skills:'定义岗位说明；用样本资料测试与校正 Agent 表现',scope:'负责打造和训练 AI Agent 工作岗位。'},
+  {id:'agt',core:true,group:'build',level:'manager',name:'AI Agent Trainer',role:'Agent 训练师',skills:'一题一题问清楚你要的岗位（做什么、用哪些资料、什么算做对、什么不可以碰、出事找谁）；草拟岗位、技能与工作范围给你确认；用样本资料试跑并校正；写进 agents/ 并更新名册 REGISTRY.md',scope:'负责新增与训练 AI Agent 岗位。你可以直接对它说「我要一个…的岗位」，它会问清楚再草拟，等你点头才写进团队，然后交给 AI Plugin Builder 打包。也可以直接丢一份 NEW-AGENTS.md 给它照着建。不改工作流程的步骤，不订审计规则，不替你决定谁负责。'},
   {id:'plb',core:true,group:'build',level:'manager',name:'AI Plugin Builder',role:'Plugin 建造师',skills:'把一条工作流程或一批新岗位打包成 Plugin；建好资料夹与 plugin.json；写 README 与安装核对清单；管版本与更新',scope:'负责把说明书（MD 或 JSON）变成一个装得起来的 Plugin，并保持团队 Plugin 与工作流程 Plugin 分开。不改流程内容，不订审计规则，不做业务决定。'}
 ];}
 function newAgent(){ return {id:uid(),core:false,group:'new',level:'manager',name:'',role:'',skills:'',scope:''}; }
@@ -1358,7 +1371,7 @@ function makeAudit(ctx){
    GENERATION
    ============================================================ */
 function slug(s){ const t=String(s||'').toLowerCase().replace(/[^a-z0-9一-鿿]+/g,'-').replace(/^-+|-+$/g,''); return t||'workflow'; }
-const CORE_SLUG={cmd:'commander',cnb:'connectors-builder',wfb:'workflow-builder',skb:'skill-builder',agt:'agent-trainer'};
+const CORE_SLUG={cmd:'commander',cnb:'connectors-builder',wfb:'workflow-builder',skb:'skill-builder',agt:'agent-trainer',plb:'plugin-builder'};
 function agentSlug(a,i,list){
   if(a.core) return CORE_SLUG[a.id]||('core-'+(i+1));
   const r=String(a.role||a.name||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
@@ -1737,13 +1750,15 @@ function genTeamMd(ag,flows,leader){
   const tools=uniq([].concat.apply([],stepIndexMap(wf).map(({st})=>(st.tools||'').split(/[，,、;；\n]/).map(t=>t.trim()))));
   const uses=[]; stepIndexMap(wf).forEach(({n,st})=>{ if(st.use) uses.push({n,name:st.use,kind:useLabel(st)||'未注明'}); });
   const humanRoles=uniq(stepIndexMap(wf).map(({st})=>st.actor==='human'?(st.role||'').trim():''));
-  const sys=(wf.name||'工作流程')+' AI 团队';
+  /* 地基模式：还没有任何流程，这一份是「先装团队」用的 */
+  const baseOnly=!list.some(f=>f&&f.wf&&((f.wf.name||'').trim()||f.wf.modules.some(m=>m.steps.length)));
+  const sys=baseOnly?'AI 团队':((wf.name||'工作流程')+' AI 团队');
   const folder='ai-team';
   const L=[]; const w=x=>L.push(x);
 
   w('# '+sys+' · 系统打造说明书');
   w('');
-  w('这是一套**可以重复使用**的 AI 团队系统。今天用它跑「'+(wf.name||'（未命名流程）')+'」，下一个流程沿用同一套结构，只加新的 Agent 和新的流程文件，不用重来。');
+  w(baseOnly?'这是一套**可以重复使用**的 AI 团队系统 —— 先把这支团队装起来（地基，装一次）。工作流程以后一条一条另外装，团队本身不用重来。':'这是一套**可以重复使用**的 AI 团队系统。今天用它跑「'+(wf.name||'（未命名流程）')+'」，下一个流程沿用同一套结构，只加新的 Agent 和新的流程文件，不用重来。');
   w('');
   w('## 0. 给 Claude 的指示');
   w('');
@@ -1753,7 +1768,7 @@ function genTeamMd(ag,flows,leader){
   w('2. 照第 3 段写 `REGISTRY.md`（名册）。');
   w('3. 照第 4 段的格式，为第 6、7 段的每一个 Agent 写身份文件，并各配一份空的 `memory.md` 和 `learnings.md`。');
   w('4. 照第 5 段，为每一个 Agent 写一张派工卡。');
-  w('5. 把第 8 段的流程写进 `workflows/`，第 9 段的技能写进 `skills/`，第 10 段的连接写进 `connectors/README.md`。');
+  w(baseOnly?'5. **不要建 `workflows/`。**这份文件里没有工作流程 —— 团队 Plugin 里不放流程，流程以后一条一条另外装。':'5. 把第 8 段的流程写进 `workflows/`，第 9 段的技能写进 `skills/`，第 10 段的连接写进 `connectors/README.md`。');
   w('6. 全部做完后，照第 12 段自检一遍，把没做到的告诉我。');
   w('');
   w('**不要发明这份文件里没有的系统、资料或规则。**不确定的地方先问我，不要自己假设。');
@@ -1874,9 +1889,25 @@ function genTeamMd(ag,flows,leader){
   w('');
   w('这六个是通用的一套，每个部门都一样。Claude 只需要把它们放进 `agents/`，接上下面这批新的。');
   w('');
+  w('### 以后要加一个新岗位：直接找 AI Agent Trainer');
+  w('');
+  w('装好这个 Plugin 之后，不必再回工具画一次。开一个对话，对 Commander 或直接对 Agent Trainer 说：');
+  w('');
+  w('```');
+  w('我要加一个新岗位。先问我五个问题，一次问一题：');
+  w('1) 这个岗位平常要做什么？ 2) 它要用哪些资料或系统？ 3) 什么算做对了？');
+  w('4) 什么事它绝对不可以做？ 5) 出问题时要找谁？');
+  w('问完给我：岗位、技能（2 到 4 项）、工作范围（最后一句是「不做…」）。');
+  w('我点头之后，写进 agents/，更新 REGISTRY.md，再交给 AI Plugin Builder 打包，最后告诉我怎么装。');
+  w('```');
+  w('');
+  w('Agent Trainer 要照的规矩：一次只问一题；只用我答的内容，不要自己发明系统或资料；'
+    +'草稿要我确认才算数；写进去之后要回报改了哪些档案。');
+  w('手上已经有一份 `NEW-AGENTS.md`（工具导出的）就更快 —— 直接给它，说「照这份建，缺的再问我」。');
+  w('');
   w('## 7. 要新增的 Agent（这个部门专属）');
   w('');
-  if(!mine.length) w('（还没有新增 Agent。回到流程图，看每一个 AI 步骤是谁的岗位。）');
+  if(!mine.length) w(baseOnly?'（地基不需要新增岗位。等你画完流程，看每一个 AI 步骤是谁的岗位，再回来加。）':'（还没有新增 Agent。回到流程图，看每一个 AI 步骤是谁的岗位。）');
   mine.forEach((a,i)=>{
     const sn=stepsFor((a.name||'').trim());
     w('### '+(i+1)+'. '+(a.name||'（未命名）')+'　`'+codeOf(a)+'`');
@@ -1937,7 +1968,7 @@ function genTeamMd(ag,flows,leader){
   w('1. 建文件夹与 `README.md`。');
   w('2. 放进 6 个现成 Agent，写好它们的派工卡。');
   w('3. 建新增的 Agent：身份 → 空记忆 → 派工卡。');
-  w('4. 写 `workflows/` 与 `skills/`。');
+  w(baseOnly?'4. 写 `memory/shared.md`（先留空白栏目就好）。':'4. 写 `workflows/` 与 `skills/`。');
   w('5. 写 connectors/README.md 与 memory/shared.md。');
   w('6. 最后写 `REGISTRY.md`，把上面全部列进去。');
   w('7. 用一个真实例子跑一次，把发现的问题写进各自的 `learnings.md`。');
@@ -1947,10 +1978,10 @@ function genTeamMd(ag,flows,leader){
   w('- [ ] 每个 Agent 都有身份、记忆、学到的三个文件，和一张派工卡。');
   w('- [ ] 每个 Agent 的身份里都写了「不做什么」。');
   w('- [ ] `REGISTRY.md` 列齐了所有 Agent、技能、流程，没有漏。');
-  w('- [ ] 每一个 AI 步骤都对得上一个 Agent，没有孤儿步骤。');
+  if(!baseOnly) w('- [ ] 每一个 AI 步骤都对得上一个 Agent，没有孤儿步骤。');
   w('- [ ] Agent 之间的工作范围不重叠；重叠就合并，或写清楚分界。');
   w('- [ ] 带 Audit 的步骤，Agent 只检查并报告，没有自己放行。');
-  w('- [ ] 用一个真实例子跑得完，结果和人手做的一致。');
+  w(baseOnly?'- [ ] 问它「你是谁？队上有谁？」，它数得出这 '+core.length+' 个岗位。':'- [ ] 用一个真实例子跑得完，结果和人手做的一致。');
   w('');
   w('---');
   w('');
@@ -2230,6 +2261,114 @@ ${ag.filter(a=>!a.core).map(a=>`  - **${a.name||'（未命名）'}**：${a.scope
 `;
 }
 
+/* 地基：AI 团队 Plugin 的安装包。全班装的是同一份，跟画什么流程无关。 */
+function genTeamPlugin(leader){
+  const core=coreAgents(); const F='```';
+  const sep=n=>['','===== FILE: '+n+' =====',''].join('\n');
+  const L=[]; const w=x=>L.push(x);
+  const d=new Date().toISOString().slice(0,10);
+  w('# AI 团队 Plugin · 安装包');
+  w('');
+  w('> 这一份每个部门都一样，跟你画什么流程无关。'+(leader?'交给 Claude Code 的人：'+leader+' · ':'')+d);
+  w('');
+  w('交给 Claude Code，请它照下面每一条 ===== FILE: 路径 ===== 建出对应的档案，内容照抄。');
+  w('');
+  w('## 先讲清楚两种 Plugin');
+  w('');
+  w('| | 装什么 | 几个 |');
+  w('|---|---|---|');
+  w('| **AI 团队 Plugin**（现在建这个） | 队上有谁、谁负责什么、共用记忆 | 一个，部门共用 |');
+  w('| **工作流程 Plugin**（以后一条一条加） | 一条流程的步骤、技能、审计台、资料格式 | 一条流程一个 |');
+  w('');
+  w('**团队 Plugin 里不要放任何工作流程。**团队的用处是按情况决定用哪一条流程；流程另外装。两边交叉使用。');
+  w('');
+  w('## 建出来长这样');
+  w('');
+  w(F);
+  w('ai-team/');
+  w('  .claude-plugin/plugin.json');
+  w('  README.md');
+  w('  REGISTRY.md            队上有谁');
+  w('  SYSTEM.md              这支团队怎么运作');
+  w('  agents/');
+  core.forEach(a=>{ w('    '+(CORE_SLUG[a.id]||a.id)+'/SKILL.md'); });
+  w('  memory/shared.md       全队共用的部门记忆');
+  w('INSTALL-CHECK.md         装完照这张单核对');
+  w(F);
+  w('');
+  w('每个 agents/<代号>/SKILL.md 的内容，照 SYSTEM.md 里那一个 Agent 的岗位、技能、工作范围写，格式：');
+  w('');
+  w(F);
+  w('# <岗位>');
+  w('## 会做什么');
+  w('## 工作范围（负责什么・不做什么）');
+  w('## 记忆');
+  w('（这个岗位学到的规矩，做一次写一次）');
+  w(F);
+  w('');
+  w('---');
+  w(sep('ai-team/.claude-plugin/plugin.json'));
+  w(F+'json');
+  w(JSON.stringify({name:'ai-team',version:'1.0.0',description:'部门的 AI 团队：'+core.length+' 个现成岗位，工作流程另外装。'},null,2));
+  w(F);
+  w(sep('ai-team/README.md'));
+  w('# AI 团队 Plugin');
+  w('');
+  w('这是地基。装一次，以后每加一条工作流程、每加一个岗位，都是接在它上面。');
+  w('');
+  w('- 要新增岗位：对 **AI Agent Trainer** 说「我要加一个新岗位」，它会一题一题问你，草拟给你确认，再写进 `agents/` 并更新 `REGISTRY.md`。');
+  w('- 要新增一条工作流程：把那条流程的说明书（MD 或 JSON）交给 **AI Workflow Builder**，再由 **AI Plugin Builder** 打包成一个 `wf-…/` Plugin。');
+  w('- 你只需要对 **AI Commander** 说话，它会分派。');
+  w('');
+  w('**这个 Plugin 里不要放工作流程。**');
+  w(sep('ai-team/REGISTRY.md'));
+  w('# 名册 · 队上有谁');
+  w('');
+  w('| 代号 | 岗位 | 类别 | 负责什么 |');
+  w('|---|---|---|---|');
+  core.forEach(a=>{ w('| `'+(CORE_SLUG[a.id]||a.id)+'` | '+a.name+' | '+agGroupName(a)+' | '+String(a.scope||'').replace(/\|/g,'／')+' |'); });
+  w('');
+  w('以后每加一个岗位，就在这张表加一行。');
+  w(sep('ai-team/SYSTEM.md'));
+  w(genTeamMd(core,[],leader));
+  w(sep('ai-team/memory/shared.md'));
+  w('# 全队共用的部门记忆');
+  w('');
+  w('写在这里的东西，队上每一个 Agent 都看得到。做一次写一次，不要重复问人。');
+  w('');
+  w('## 部门用的系统');
+  w('（例：SQL Account、Excel、公司邮箱）');
+  w('');
+  w('## 常用称呼与代号');
+  w('（例：客户简称、部门内部叫法）');
+  w('');
+  w('## 已经定下来的规矩');
+  w('（例：金额差 5 令吉以内当银行手续费）');
+  w('');
+  w('## 踩过的坑');
+  w('（例：某供应商的发票日期是 DD/MM，不是 MM/DD）');
+  w(sep('INSTALL-CHECK.md'));
+  w('# 装好了没有 · 核对清单');
+  w('');
+  w('- [ ] `ai-team/` 里有 `REGISTRY.md`、`SYSTEM.md`、`memory/shared.md`');
+  w('- [ ] `ai-team/agents/` 里有 '+core.length+' 个资料夹，每个都有 SKILL.md');
+  w('- [ ] `REGISTRY.md` 的表列齐了这 '+core.length+' 个岗位');
+  w('- [ ] 开一个新对话问：「你是谁？队上有谁？各自负责什么？」 —— 它答得出这 '+core.length+' 个岗位');
+  w('- [ ] 再问一次：「我要加一个新岗位，你会怎么做？」 —— 它应该说会先问你问题，再草拟给你确认');
+  w('- [ ] 这个 Plugin 里**没有**任何一条工作流程（流程要另外装）');
+  w(sep('END'));
+  return L.join('\n')+'\n';
+}
+function genTeamFirst(){ return `我刚才贴给你的内容（或本文件夹里的 AI-TEAM-PLUGIN.md）用「===== FILE: 路径 =====」分隔，每一段就是一个要建的档案，路径就是标题里的路径，内容照抄。
+
+先给我 Plan，不要开始 Build：
+1. 你会建出哪些资料夹和档案。
+2. 每个档案一句话说明。
+3. 有哪些地方资料不够。
+
+注意：现在建的只是 **AI 团队 Plugin**（ai-team/），里面不放任何工作流程；工作流程以后一条一条另外装。
+
+等我确认 Plan 之后你才动手。用简体中文回复。`; }
 function genFirstPrompt(ws){ return `我刚才贴给你的内容（或本文件夹里的 AI-SYSTEM-BUNDLE.md）用「===== FILE: 路径 =====」分隔，每一段就是一个要建的档案。
 
 先给我 Plan，不要开始 Build：
@@ -2237,7 +2376,7 @@ function genFirstPrompt(ws){ return `我刚才贴给你的内容（或本文件�
 2. 每个档案一句话说明。
 3. 你有哪些疑问，或哪些地方资料不够。
 
-注意：要建的是两种 Plugin——一个 AI 团队（ai-team/），和一条工作流程（wf-…/）。团队里不要放工作流程。project-template/ 是 Claude Project 的指令范本，不是 Plugin。
+注意：AI 团队（ai-team/）我已经装好了 —— 这份文档里的团队部分只用来**更新**（补上新增的岗位、更新名册），不要重建、不要覆盖我已经写过的记忆。这次真正要建的是那一条工作流程（wf-…/）。团队里不要放工作流程。project-template/ 是 Claude Project 的指令范本，不是 Plugin。
 
 等我确认 Plan 之后你才动手。用简体中文回复。`; }
 
@@ -2482,6 +2621,19 @@ function aiPasteAgents(pre,getList,editor){
   box.value=''; $('#'+pre+'AiIn').value='';
   $('#'+pre+'AiStatus').textContent=((o&&o.note)?o.note+' · ':'')+'已加入 '+added+' 个，往下看，可以直接改。';
 }
+/* ---- 2.2 地基：装 AI 团队 Plugin ---- */
+const baseBtn=$('#basePkg');
+if(baseBtn) baseBtn.addEventListener('click',()=>{
+  saveFile('AI-TEAM-PLUGIN.md',genTeamPlugin(S.name));
+  $('#baseStatus').textContent=canDirectSave()?'已下载 · 贴进 Claude Code 也可以':'已复制 · 贴进 Claude Code 的对话框';
+});
+const baseFirstBtn=$('#baseFirst');
+if(baseFirstBtn) baseFirstBtn.addEventListener('click',async()=>{ await copyText(genTeamFirst()); toast('已复制 · 贴进 Claude Code'); });
+const baseDoneBtn=$('#baseDone');
+if(baseDoneBtn) baseDoneBtn.addEventListener('click',()=>{
+  if(S.flags.base){ toast('已经记录了'); return; }
+  S.flags.base=true; save(); evalGates(); toast('🧩 地基装好了 · 接下来画流程');
+});
 $('#agAiGo').addEventListener('click',()=>aiBuildAgents('ag',()=>S.agents,()=>S.wf,agP));
 $('#agAiApply').addEventListener('click',()=>aiPasteAgents('ag',()=>S.agents,agP));
 
@@ -2814,11 +2966,13 @@ const GATES={
   wf:{ok:()=>{const s=wfStats();return s.steps>=5&&s.audits>=1&&s.name;},txt:()=>{const s=wfStats();return `有名称、至少 5 步、至少 1 个 Audit（现在 ${s.steps} 步 / ${s.audits} Audit）`;}},
   agents:{ok:()=>S.agents.some(a=>!a.core&&(a.name||'').trim()&&(a.skills||'').trim()&&(a.scope||'').trim()),txt:()=>'至少一个新 Agent：名称、技能、范围三项填齐'},
   audit:{ok:()=>!!S.flags.audit&&auditPoints(S.wf).length>0,txt:()=>auditPoints(S.wf).length?'预览或下载一次审计台':'流程里还没有 Audit 点，回「画你的流程」勾一个'},
+  base:{ok:()=>!!S.flags.base,txt:()=>'拿到说明书、装好之后，按「✅ 我装好了」'},
   gen:{ok:()=>!!S.flags.gen,txt:()=>'按「生成两份文件」'},
   install:{ok:()=>!!S.store.install,txt:()=>'选 Zip 或 GitHub'},
   group:{ok:()=>!!S.group,txt:()=>'选择 A 组或 B 组'}
 };
 const BADGES=[
+  {id:'base',em:'🧩',name:'团队上线者',how:'装好 AI 团队 Plugin',ok:()=>!!S.flags.base},
   {id:'wf',em:'🗺️',name:'流程绘图师',how:'流程有名称、至少 5 步、至少 1 个 Audit',ok:()=>GATES.wf.ok()},
   {id:'ag',em:'🤖',name:'团队组建者',how:'一个新 Agent 三项填齐',ok:()=>GATES.agents.ok()},
   {id:'au',em:'🛡️',name:'审计设计师',how:'看过审计台，每个审计点都写了接手',ok:()=>GATES.audit.ok()&&auditPoints(S.wf).every(p=>(S.audit.notes[p.st.id]||'').trim())},
@@ -2846,7 +3000,7 @@ function renderLoopStages(){
 }
 function renderBadges(){ const row=$('#badgeRow'); if(!row) return; row.innerHTML=BADGES.map(b=>`<div class="badge${S.badges[b.id]?' on':''}"><span class="em">${b.em}</span><span>${b.name}<small>${esc(b.how)}</small></span></div>`).join(''); }
 function renderFinale(){ const f=$('#finale'); if(!f) return; const got=BADGES.filter(b=>S.badges[b.id]); const miss=BADGES.filter(b=>!S.badges[b.id]);
-  f.innerHTML=got.length===BADGES.length?`<div class="card"><span class="label">🎓 六个徽章都在你手上</span><p class="big">你现在是部门里第一个把流程系统化的人。系统不是 Claude 的，是你的。</p><div class="badges">${BADGES.map(b=>`<div class="badge on"><span class="em">${b.em}</span><span>${b.name}</span></div>`).join('')}</div></div>`
+  f.innerHTML=got.length===BADGES.length?`<div class="card"><span class="label">🎓 ${BADGES.length} 个徽章都在你手上</span><p class="big">你现在是部门里第一个把流程系统化的人。系统不是 Claude 的，是你的。</p><div class="badges">${BADGES.map(b=>`<div class="badge on"><span class="em">${b.em}</span><span>${b.name}</span></div>`).join('')}</div></div>`
   :`<div class="card"><span class="label">🏅 徽章 ${got.length}/${BADGES.length}</span><p style="margin:6px 0 8px">还差：${miss.map(b=>b.em+' '+b.name+'（'+b.how+'）').join('；')}。徽章不是给出席的，是给做出来的。做出来了它会自己亮。</p><div class="badges">${BADGES.map(b=>`<div class="badge${S.badges[b.id]?' on':''}"><span class="em">${b.em}</span><span>${b.name}</span></div>`).join('')}</div></div>`; }
 
 /* ---- navigation ---- */
