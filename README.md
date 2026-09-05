@@ -25,6 +25,17 @@
 > 这四个工具是**用来设计**的，本身不是 Claude Plugin。
 > 你在这里想清楚，再交给 Claude Code 去打造 Plugin。
 
+## 把方法带走：两个 Skill
+
+两个建造器的方法本身也可以导出成 Claude Skill：
+
+- 在**工作流程建造器**按「🧠 导出这套方法（Skill）」→ `workflow-design.SKILL.md`
+- 在 **AI Agent 团队建造器**按同一颗 → `agent-team-design.SKILL.md`
+
+放进 claude.ai 的对话、Cowork，或 Claude Code 专案的 `.claude/skills/`，
+Claude 就会照同一套方法问你几题、画出流程或写好岗位，最后给你一段可以贴回工具的 JSON。
+（用「导出整套体系」建出来的 AI 团队 Plugin 里，本来就带着这两个技能。）
+
 ## 审计台
 
 审计台是一个独立网页。在「审计系统」按「下载审计台 HTML」拿到 `console.html`，

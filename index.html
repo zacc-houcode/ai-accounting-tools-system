@@ -541,6 +541,7 @@ h4.agh{margin:22px 0 10px;font-size:15px}
       <div class="row" id="libTop">
         <button class="btn sm pri" type="button" id="libNew">＋ 新建流程</button>
         <button class="btn sm" type="button" id="libImport">导入 JSON</button>
+        <button class="btn sm" type="button" id="libSkill">🧠 导出这套方法（Skill）</button>
       </div>
     </div>
     <div class="body">
@@ -590,7 +591,7 @@ h4.agh{margin:22px 0 10px;font-size:15px}
       <div class="row">
         <button class="btn sm" type="button" id="tmView">🔍 预览团队</button>
         <button class="btn sm" type="button" id="tmMd">导出系统 MD</button>
-        <button class="btn sm" type="button" id="tmMdNew">只导出新增的</button>
+        <button class="btn sm" type="button" id="tmMdNew">只导出新增的</button><button class="btn sm" type="button" id="tmSkill">🧠 导出这套方法（Skill）</button>
       </div>
     </div>
     <div class="body">
@@ -2075,6 +2076,10 @@ function genBundle(agents,flows,leader){
   w('---');
   w(sep('ai-team/SYSTEM.md'));
   w(genTeamMd(agents,list,leader));
+  w(sep('ai-team/skills/workflow-design/SKILL.md'));
+  w(genSkillWorkflow());
+  w(sep('ai-team/skills/agent-team-design/SKILL.md'));
+  w(genSkillAgents());
   list.forEach((f,i)=>{
     const wf=f.wf, au=f.au||emptyAudit(), code=codes[i];
     const ws={wf:wf,agents:agents,audit:au};
@@ -2261,6 +2266,157 @@ ${ag.filter(a=>!a.core).map(a=>`  - **${a.name||'（未命名）'}**：${a.scope
 `;
 }
 
+/* 把两个建造器变成 Skill：装进 Plugin，或直接丢进 claude.ai / Cowork 用 */
+function genSkillWorkflow(){
+  const F='```';
+  const L=[]; const w=x=>L.push(x);
+  w('---');
+  w('name: workflow-design');
+  w('description: 把一件重复做的工作画成可以照做的工作流程。使用者说「帮我把这件事变成流程」「画个 SOP」「这条流程怎么排」，或要检查、优化一条现有流程时，用这个技能。产出编号步骤、谁负责、审计点，以及一段可以导入工具的 JSON。');
+  w('---');
+  w('');
+  w('# 工作流程设计');
+  w('');
+  w('## 什么时候用');
+  w('');
+  w('- 使用者想把一件每天／每周都在做的事，变成部门里另一个人照着也做得出来的流程。');
+  w('- 使用者已经有一条流程，想检查哪里会出错、哪里该有人审。');
+  w('- 要把流程交给 AI Plugin Builder 打包成一个工作流程 Plugin 之前。');
+  w('');
+  w('## 在哪里用得上');
+  w('');
+  w('- **claude.ai 对话／Cowork**：把这个技能加进去，直接说需求，它照这套方法问你、画给你。');
+  w('- **Claude Code**：装了 AI 团队 Plugin 就已经带着这个技能。画好之后直接说「交给 AI Plugin Builder 打包成一个工作流程 Plugin」，它会照这份 JSON 建出 `wf-<代号>/`（WORKFLOW.md、技能、审计台、资料格式），装上去就能用。');
+  w('- 不想装整个 Plugin，也可以只把这个资料夹放进专案的 `.claude/skills/` 里。');
+  w('');
+  w('## 三层规模');
+  w('');
+  w('| 层 | 回答什么 | 写成什么 |');
+  w('|---|---|---|');
+  w('| 大 | 几时做 | 流程名称、目标、启动方式（Trigger 事件触发／Manual 人手启动）、结束条件 |');
+  w('| 中 | 做什么 | 2 到 4 个模块，每个模块是一段 |');
+  w('| 小 | 如何做 | 步骤：如何做 + 预期结果，全部步骤 5 到 12 步 |');
+  w('');
+  w('## 每一步一定要有的');
+  w('');
+  w('1. **如何做**：动作写清楚，不要写「处理一下」。');
+  w('2. **预期结果**：什么算做完了、做对了。');
+  w('3. **谁负责**：human（写职位，例如「应付会计」）或 ai（写这个 Agent 的岗位，例如「发票识别助手」）。');
+  w('4. **Action 还是 Audit**：Audit 是要有人看过才放行的步骤，风险最高那一步至少要有一个。');
+  w('5. 真的用到才写**工具**（SQL Account、Excel、邮箱）和**资料**（供应商主档、上个月的清单）。');
+  w('');
+  w('## 三种步骤');
+  w('');
+  w('- `step` 一般步骤。');
+  w('- `or` 判断：要写清楚判断什么、「否」怎么处理、「否」之后去哪里（回上一步 `prev`、转人工 `manual`、结束流程 `endflow`，或某一步的号码）。');
+  w('- `loop` 重复：要写重复几次或什么时候停。');
+  w('');
+  w('开始（start）和结束（end）是整条流程的头尾，不放进模块里。开始写「什么事情发生就启动、谁先把东西准备好」，结束写「做完交给谁」。');
+  w('');
+  w('## 对话怎么走');
+  w('');
+  w('1. 使用者形容得不够清楚时，**一次问一题**，最多五题：这件事什么时候开始？中间经过谁的手？用什么系统或档案？什么算做完了？哪一步错了最麻烦？');
+  w('2. 先给**人看得懂的清单**：编号步骤、谁负责、如何做、预期结果、哪一步是 Audit。');
+  w('3. 问使用者哪里不对，改到他点头。');
+  w('4. 最后附上 JSON（下面的格式），他可以贴回工具里继续改，或交给 AI Plugin Builder 打包。');
+  w('');
+  w('## 输出的 JSON 格式');
+  w('');
+  w(F+'json');
+  w('{');
+  w('  "name": "流程名称", "goal": "目标", "trigger": "trigger 或 manual",');
+  w('  "triggerDesc": "什么事情发生就启动", "endResult": "做完会得到什么",');
+  w('  "start": {"how": "", "expected": ""},');
+  w('  "modules": [{"name": "模块名", "steps": [');
+  w('    {"type": "step", "actor": "ai", "role": "岗位", "audit": false,');
+  w('     "how": "", "expected": "", "tools": "", "data": "",');
+  w('     "no": "", "noTarget": "", "loop": ""}');
+  w('  ]}],');
+  w('  "end": {"how": "", "expected": ""}');
+  w('}');
+  w(F);
+  w('');
+  w('## 交出去之前自己检查');
+  w('');
+  w('- [ ] 有名称、目标、启动方式、结束条件。');
+  w('- [ ] 每一步都有「如何做」和「预期结果」，而且写的是部门里的话，不是 AI 术语。');
+  w('- [ ] 每一步都写了谁负责。');
+  w('- [ ] 至少一个 Or，「否」的去向有指定。');
+  w('- [ ] 至少一个 Audit，放在错了最麻烦的那一步；Audit 只检查并报告，由人决定放行。');
+  w('- [ ] 用到的系统和档案都是使用者说过的，没有自己发明。');
+  w('');
+  w('## 不要做的事');
+  w('');
+  w('- 不要一次丢十个问题给使用者。');
+  w('- 不要把「提升效率」这种空话写进步骤。');
+  w('- 不要替使用者决定业务规则（容差多少、谁审批）—— 问他。');
+  w('- 不要把工作流程写进 AI 团队 Plugin；流程是自己的一个 Plugin。');
+  return L.join('\n')+'\n';
+}
+function genSkillAgents(){
+  const core=coreAgents(); const F='```';
+  const L=[]; const w=x=>L.push(x);
+  w('---');
+  w('name: agent-team-design');
+  w('description: 帮使用者设计与新增 AI Agent 岗位。使用者说「我要一个…的 Agent」「团队还缺谁」「谁负责这一步」，或流程里有 AI 步骤没人负责时，用这个技能。产出岗位、技能、工作范围，以及一段可以导入工具的 JSON。');
+  w('---');
+  w('');
+  w('# AI Agent 团队设计');
+  w('');
+  w('## 在哪里用得上');
+  w('');
+  w('- **claude.ai 对话／Cowork**：把这个技能加进去，直接说需求，它照这套方法问你、画给你。');
+  w('- **Claude Code**：装了 AI 团队 Plugin 就已经带着这个技能。写好之后说「交给 AI Plugin Builder，更新团队 Plugin，不要重建」，它会把岗位写进 `agents/`、名册加一行，再打包成新版本。');
+  w('- 不想装整个 Plugin，也可以只把这个资料夹放进专案的 `.claude/skills/` 里。');
+  w('');
+  w('## 团队长什么样');
+  w('');
+  w('- **Leader 是使用者本人**（人类），只对 **AI Commander** 说话。');
+  w('- Commander 读懂流程，决定谁做哪一步。');
+  w('- 其余 Agent 之间没有上下级，各自只对 Commander 负责，各管各的工作范围。');
+  w('');
+  w('### 现成的 '+core.length+' 个岗位（不要重建、不要改名）');
+  w('');
+  w('| 岗位 | 负责什么 |');
+  w('|---|---|');
+  core.forEach(a=>{ w('| '+a.name+' | '+String(a.scope||'').replace(/\|/g,'／')+' |'); });
+  w('');
+  w('新增的岗位是「这个部门专属」的，例如发票识别助手、银行对账员。');
+  w('');
+  w('## 一个岗位要写三样');
+  w('');
+  w('1. **岗位**：像一个职位名（发票识别助手 / Bank Reconciler）。一个 Agent 只有这一个名字。');
+  w('2. **技能**：会做的事，动词开头，分号分开，2 到 4 项。');
+  w('3. **工作范围**：负责哪几步、不碰什么，**最后一定要有一句「不做…」**。');
+  w('');
+  w('## 对话怎么走');
+  w('');
+  w('1. **一次问一题**，最多五题：这个岗位平常要做什么？要用哪些资料或系统？什么算做对了？什么事绝对不可以做？出问题时找谁？');
+  w('2. 草拟 1 到 3 个岗位给使用者看（不要硬凑，一件事就一个岗位）。');
+  w('3. 等他点头，才写进 `agents/<代号>/SKILL.md`，并在 `REGISTRY.md` 加一行。');
+  w('4. 要打包成 Plugin，交给 **AI Plugin Builder**，说明是「新增岗位，更新团队，不要重建」。');
+  w('');
+  w('## 输出的 JSON 格式');
+  w('');
+  w(F+'json');
+  w('{"agents": [{"name": "岗位", "skills": "动词开头；分号分开", "scope": "负责…。不做…"}], "note": "一句话说明你怎么理解他的需求"}');
+  w(F);
+  w('');
+  w('## 交出去之前自己检查');
+  w('');
+  w('- [ ] 流程图里每一个 AI 步骤，都有一个岗位负责，没有孤儿步骤。');
+  w('- [ ] 岗位之间的工作范围不重叠，也不留空。');
+  w('- [ ] 每个岗位都写了「不做…」。');
+  w('- [ ] 带 Audit 的步骤，Agent 只检查并报告，不自己放行。');
+  w('- [ ] 没有重建那 '+core.length+' 个现成岗位。');
+  w('');
+  w('## 不要做的事');
+  w('');
+  w('- 不要发明部门没有的系统、资料或规则。');
+  w('- 不要一个岗位塞十项技能；塞不下就拆成两个岗位，并说清楚分界。');
+  w('- 不要替使用者决定谁审批、谁负责签字。');
+  return L.join('\n')+'\n';
+}
 /* 地基：AI 团队 Plugin 的安装包。全班装的是同一份，跟画什么流程无关。 */
 function genTeamPlugin(leader){
   const core=coreAgents(); const F='```';
@@ -2292,6 +2448,9 @@ function genTeamPlugin(leader){
   w('  SYSTEM.md              这支团队怎么运作');
   w('  agents/');
   core.forEach(a=>{ w('    '+(CORE_SLUG[a.id]||a.id)+'/SKILL.md'); });
+  w('  skills/');
+  w('    workflow-design/SKILL.md   怎么画一条工作流程（Workflow Builder 用）');
+  w('    agent-team-design/SKILL.md 怎么设计一个岗位（Agent Trainer 用）');
   w('  memory/shared.md       全队共用的部门记忆');
   w('INSTALL-CHECK.md         装完照这张单核对');
   w(F);
@@ -2320,6 +2479,12 @@ function genTeamPlugin(leader){
   w('- 要新增一条工作流程：把那条流程的说明书（MD 或 JSON）交给 **AI Workflow Builder**，再由 **AI Plugin Builder** 打包成一个 `wf-…/` Plugin。');
   w('- 你只需要对 **AI Commander** 说话，它会分派。');
   w('');
+  w('### 两个技能（skills/）');
+  w('');
+  w('`workflow-design` 和 `agent-team-design` 是把那两个建造器的方法写成的技能。装了这个 Plugin，'
+    +'**AI Workflow Builder** 和 **AI Agent Trainer** 在 Claude Code、claude.ai 对话或 Cowork 里都能照这套方法，直接问你几题、画出流程、写好岗位，'
+    +'最后给你一段可以贴回工具的 JSON。不必再开网页工具也做得出来。');
+  w('');
   w('**这个 Plugin 里不要放工作流程。**');
   w(sep('ai-team/REGISTRY.md'));
   w('# 名册 · 队上有谁');
@@ -2331,6 +2496,10 @@ function genTeamPlugin(leader){
   w('以后每加一个岗位，就在这张表加一行。');
   w(sep('ai-team/SYSTEM.md'));
   w(genTeamMd(core,[],leader));
+  w(sep('ai-team/skills/workflow-design/SKILL.md'));
+  w(genSkillWorkflow());
+  w(sep('ai-team/skills/agent-team-design/SKILL.md'));
+  w(genSkillAgents());
   w(sep('ai-team/memory/shared.md'));
   w('# 全队共用的部门记忆');
   w('');
@@ -2352,6 +2521,8 @@ function genTeamPlugin(leader){
   w('');
   w('- [ ] `ai-team/` 里有 `REGISTRY.md`、`SYSTEM.md`、`memory/shared.md`');
   w('- [ ] `ai-team/agents/` 里有 '+core.length+' 个资料夹，每个都有 SKILL.md');
+  w('- [ ] `ai-team/skills/` 里有 `workflow-design/` 和 `agent-team-design/`');
+  w('- [ ] 对它说「帮我把一件事画成工作流程」，它会一题一题问你，而不是直接丢一大段');
   w('- [ ] `REGISTRY.md` 的表列齐了这 '+core.length+' 个岗位');
   w('- [ ] 开一个新对话问：「你是谁？队上有谁？各自负责什么？」 —— 它答得出这 '+core.length+' 个岗位');
   w('- [ ] 再问一次：「我要加一个新岗位，你会怎么做？」 —— 它应该说会先问你问题，再草拟给你确认');
@@ -3217,6 +3388,11 @@ $('#tmFromClass').addEventListener('click',()=>{ const t=teamState(); const name
 $('#tmCheck').addEventListener('click',()=>{ checkAgents({wf:teamWf(),agents:teamState()},'tmag'); if(!cap.sample) return; document.getElementById('tutor-tmag').scrollIntoView({behavior:'smooth',block:'nearest'}); });
 wfFixers['tmag']={run:()=>optimiseAgents(()=>teamState(),()=>{ save(); teamP.render(); },'tmag')};
 async function applyWfLib(wf){ libAdd(wf); toast('已生成，加进流程库'); return true; }
+/* 把这套方法本身交出去：装进 Plugin 的 skills/，或直接丢进 claude.ai / Cowork */
+const libSkillBtn=$('#libSkill');
+if(libSkillBtn) libSkillBtn.addEventListener('click',()=>saveFile('workflow-design.SKILL.md',genSkillWorkflow()));
+const tmSkillBtn=$('#tmSkill');
+if(tmSkillBtn) tmSkillBtn.addEventListener('click',()=>saveFile('agent-team-design.SKILL.md',genSkillAgents()));
 $('#libAiGo').addEventListener('click',()=>aiBuildWf('lib',()=>{ const it=libItem(); return it?it.wf:emptyWf(); },applyWfLib));
 $('#libAiApply').addEventListener('click',()=>aiPasteWf('lib',applyWfLib));
 $('#libFromClass').addEventListener('click',()=>{
