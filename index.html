@@ -604,7 +604,11 @@ h4.agh{margin:22px 0 10px;font-size:15px}
         <p class="note">用你自己的话形容你需要一个什么样的 AI Agent，Claude 会照着上面选的流程，帮你写好岗位、技能和工作范围。生成后可以自己改。</p>
         <textarea id="tmAiIn" rows="3" hidden placeholder="例：我要一个帮我核对银行月结单和 SQL Account 收款记录的 Agent，对不上的要列清单给我看，不可以自己改数字。"></textarea>
         <div class="row" id="tmAiRow" hidden><button class="btn pri sm" type="button" id="tmAiGo">✨ 生成 Agent</button><span class="status" id="tmAiStatus"></span></div>
-        <p class="note" id="tmAiOff" style="margin:0">写好上面的描述，按「📋 复制提示词给 Claude」，贴进你自己的 Claude 对话，它会照你的流程图写好岗位、技能和工作范围，你再填进下面的卡片。</p>
+        <p class="note" id="tmAiOff" style="margin:0 0 10px">写好上面的描述，按「📋 复制提示词给 Claude」，贴进你自己的 Claude 对话。它会回一段 <b>JSON</b>：整段复制，贴进下面的框，按「贴回来 · 加进团队」，Agent 卡片就自动建好了。</p>
+          <div id="tmAiBack" hidden>
+            <textarea id="tmAiJson" rows="3" placeholder="把 Claude 回的整段 JSON 贴在这里（{ 开头 } 结尾）"></textarea>
+            <div class="row"><button class="btn sm" type="button" id="tmAiApply">贴回来 · 加进团队</button></div>
+          </div>
       </div>
       <div id="tmEditor"></div>
     </div>
@@ -715,7 +719,7 @@ h4.agh{margin:22px 0 10px;font-size:15px}
   </div>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<div id="__stubs" hidden aria-hidden="true"><div id="agAiGo"></div><div id="agCheck"></div><div id="agEditor"></div><div id="agFromWf"></div><div id="agLoadDemo"></div><div id="agMd"></div><div id="agMdNew"></div><div id="agView"></div><input type="checkbox" id="auAll"><div id="auAllTxt"></div><div id="auAllWrap"></div><div id="auDl"></div><div id="auLoadDemo"></div><div id="auView"></div><div id="auditForm"></div><div id="auditList"></div><div id="demoDiagram"></div><div id="demoLoad"></div><div id="demoZoom"></div><div id="finale"></div><div id="genBtn"></div><div id="genBundle"></div><div id="genCopy"></div><div id="genDownload"></div><textarea id="genOut"></textarea><div id="genProjCopy"></div><div id="genPrompt1"></div><div id="genStatus"></div><div id="genTabs"></div><div id="giCopy"></div><div id="giGen"></div><div id="giHint"></div><textarea id="giOut"></textarea><div id="giResult"></div><div id="giStatus"></div><div id="giTool"></div><div id="grBody"></div><div id="grPick"></div><div id="grTitle"></div><div id="installPick"></div><div id="legend"></div><div id="libFromClass"></div><div id="loopChart11"></div><div id="loopChart33"></div><div id="teacherBox"></div><div id="tmFromClass"></div><div id="wfAiApply"></div><div id="wfAiGo"></div><div id="wfCheck"></div><div id="wfClear"></div><div id="wfEditor"></div><div id="wfExport"></div><div id="wfImg"></div><div id="wfImport"></div><div id="wfLoadDemo"></div><div id="wfLoadEasy"></div><div id="wfZoom"></div></div>
+<div id="__stubs" hidden aria-hidden="true"><div id="agAiApply"></div><div id="agAiGo"></div><div id="agCheck"></div><div id="agEditor"></div><div id="agFromWf"></div><div id="agLoadDemo"></div><div id="agMd"></div><div id="agMdNew"></div><div id="agView"></div><input type="checkbox" id="auAll"><div id="auAllTxt"></div><div id="auAllWrap"></div><div id="auDl"></div><div id="auLoadDemo"></div><div id="auView"></div><div id="auditForm"></div><div id="auditList"></div><div id="demoDiagram"></div><div id="demoLoad"></div><div id="demoZoom"></div><div id="finale"></div><div id="genBtn"></div><div id="genBundle"></div><div id="genCopy"></div><div id="genDownload"></div><textarea id="genOut"></textarea><div id="genProjCopy"></div><div id="genPrompt1"></div><div id="genStatus"></div><div id="genTabs"></div><div id="giCopy"></div><div id="giGen"></div><div id="giHint"></div><textarea id="giOut"></textarea><div id="giResult"></div><div id="giStatus"></div><div id="giTool"></div><div id="grBody"></div><div id="grPick"></div><div id="grTitle"></div><div id="installPick"></div><div id="legend"></div><div id="libFromClass"></div><div id="loopChart11"></div><div id="loopChart33"></div><div id="teacherBox"></div><div id="tmFromClass"></div><div id="wfAiApply"></div><div id="wfAiGo"></div><div id="wfCheck"></div><div id="wfClear"></div><div id="wfEditor"></div><div id="wfExport"></div><div id="wfImg"></div><div id="wfImport"></div><div id="wfLoadDemo"></div><div id="wfLoadEasy"></div><div id="wfZoom"></div></div>
 
 <script>window.__TOOLS_ONLY=true;</script>
 <script>
@@ -2436,27 +2440,49 @@ ${wfOutline(getWf())}
 ${want}
 
 只回 JSON，不要别的字：{"agents":[{"name":"","skills":"","scope":""}],"note":"一句话说明你怎么理解他的需求"}`;
-  if(!cap.sample){ await handoff(prompt.replace(/只回 JSON[\s\S]*$/,'请照这个格式回我，一个 Agent 一段，我要照着填进表格：\n\n岗位：\n技能：\n工作范围：'),'建 Agent'); btn.disabled=false; st.textContent=''; return; }
+  if(!cap.sample){
+    await handoff(prompt+'\n\n（请把整段 JSON 给我，我要贴回工具里。）','建 Agent');
+    btn.disabled=false; st.textContent='贴进你自己的 Claude，把它回的整段 JSON 复制回来，贴进下面的框。'; return;
+  }
   try{
     const r=await sample.json(prompt,{cache:false});
-    const list=Array.isArray(r&&r.agents)?r.agents.slice(0,3):[];
-    let added=0, firstId=null;
-    list.forEach(x=>{
-      const name=String((x&&x.name)||'').trim(); if(!name) return;
-      if(list.some(a=>(a.name||'').trim()===name)) return;
-      const a=newAgent(); a.name=name; a.skills=String(x.skills||'').trim(); a.scope=String(x.scope||'').trim();
-      list.push(a); editor.reveal(a.id); added++; if(!firstId) firstId=a.id;
-    });
+    const added=addAiAgents(r,getList(),editor);
     if(!added){ st.textContent='Claude 没有给出新的 Agent，换个说法再试一次。'; return; }
-    save(); editor.render();
     st.textContent=(r&&r.note?r.note+' · ':'')+'已加入 '+added+' 个，往下看，可以直接改。';
     $('#'+pre+'AiIn').value='';
-    setTimeout(()=>{ const el=document.querySelector('[data-aid="'+firstId+'"]'); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); },80);
-    toast('已加入 '+added+' 个 Agent');
   }catch(e){ st.textContent=errCopy(e&&e.code)||'生成失败，再试一次'; }
   finally{ btn.disabled=false; }
 }
+/* Claude 回的内容 → Agent 卡片。只收岗位、技能、工作范围三格，别的一律不要 */
+function addAiAgents(o,team,editor){
+  const src=(o&&Array.isArray(o.agents))?o.agents:(Array.isArray(o)?o:null);
+  if(!src) return 0;
+  const s=(v,n)=>String(v==null?'':v).trim().slice(0,n||400);
+  const have=new Set(team.map(a=>(a.name||'').trim()).filter(Boolean));
+  let added=0, firstId=null;
+  src.slice(0,5).forEach(x=>{
+    const name=s(x&&x.name,40)||s(x&&x.role,40); if(!name||have.has(name)) return;
+    const a=newAgent(); a.name=name; a.skills=s(x&&x.skills); a.scope=s(x&&x.scope);
+    team.push(a); have.add(name); editor.reveal(a.id); added++; if(!firstId) firstId=a.id;
+  });
+  if(!added) return 0;
+  save(); editor.render();
+  setTimeout(()=>{ const el=document.querySelector('[data-aid="'+firstId+'"]'); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); },80);
+  toast('已加入 '+added+' 个 Agent');
+  return added;
+}
+function aiPasteAgents(pre,getList,editor){
+  const box=$('#'+pre+'AiJson'); const t=(box&&box.value||'').trim();
+  if(!t){ toast('先把 Claude 回的 JSON 贴进来'); return; }
+  const o=parseLooseJson(t);
+  if(!o){ toast('这段看起来不是 JSON · 把 Claude 回覆里 { 开头 } 结尾的那一整段复制过来'); return; }
+  const added=addAiAgents(o,getList(),editor);
+  if(!added){ toast('没有新的 Agent 可以加 · 这几个岗位可能已经在名单里了'); return; }
+  box.value=''; $('#'+pre+'AiIn').value='';
+  $('#'+pre+'AiStatus').textContent=((o&&o.note)?o.note+' · ':'')+'已加入 '+added+' 个，往下看，可以直接改。';
+}
 $('#agAiGo').addEventListener('click',()=>aiBuildAgents('ag',()=>S.agents,()=>S.wf,agP));
+$('#agAiApply').addEventListener('click',()=>aiPasteAgents('ag',()=>S.agents,agP));
 
 /* ---- AI 帮你画流程（和「AI 帮你建 Agent」同一个做法）---- */
 function wfAiPrompt(want,cur){
@@ -2553,8 +2579,9 @@ async function aiPasteWf(pre,apply){
   const box=$('#'+pre+'AiJson'); const t=(box&&box.value||'').trim();
   if(!t){ toast('先把 Claude 回的 JSON 贴进来'); return; }
   const o=parseLooseJson(t);
-  const wf=o?wfFromAi(o):null;
-  if(!wf){ toast('这段看起来不是流程 JSON · 把 Claude 回覆里 { 开头 } 结尾的那一整段复制过来'); return; }
+  if(!o){ toast('这段看起来不是 JSON · 把 Claude 回覆里 { 开头 } 结尾的那一整段复制过来'); return; }
+  const wf=wfFromAi(o);
+  if(!wf){ toast('这段 JSON 里没有步骤 · 再让 Claude 照格式回一次'); return; }
   if(!(await apply(wf))) return;
   box.value=''; $('#'+pre+'AiStatus').textContent='已经画好 '+wfAiCount(wf)+' 步，每一步都可以改。';
 }
@@ -3023,6 +3050,7 @@ $('#sysPrompt').addEventListener('click',()=>copyText(genFirstPrompt({})));
 
 const teamP=makeAgentEditor({ get:()=>teamState(), set:a=>{S.teamLib=a;}, editor:$('#tmEditor'), preview:null, leader:()=>S.name, readonly:()=>false, onChange:()=>save() });
 $('#tmAiGo').addEventListener('click',()=>aiBuildAgents('tm',()=>teamState(),()=>teamWf(),teamP));
+$('#tmAiApply').addEventListener('click',()=>aiPasteAgents('tm',()=>teamState(),teamP));
 $('#tmView').addEventListener('click',()=>teamP.open());
 $('#tmMd').addEventListener('click',()=>saveFile('AI-TEAM-SYSTEM.md',genTeamMd(teamState(),teamWf(),S.name)));
 $('#tmMdNew').addEventListener('click',()=>{ if(!teamState().some(a=>!a.core)){ toast('还没有新增的 Agent'); return; } saveFile('NEW-AGENTS.md',genNewAgentsMd(teamState(),teamWf(),S.name)); });
